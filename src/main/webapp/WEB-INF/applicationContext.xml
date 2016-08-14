@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.2.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.2.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
+
+ 	<context:annotation-config/>
+	   
+	<context:component-scan base-package="com.inno.tax">      
+ 	</context:component-scan>
+ 	<mvc:annotation-driven/>
+
+	<bean id="sessionFactory"
+	class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="packagesToScan" value="com.inno.tax"></property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
+				<prop key="show_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<!-- <prop key="hibernate.current_session_context_class">thread</prop> -->
+			</props>
+		</property>
+	</bean>   
+	
+	 <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"  destroy-method="close">
+		<property name="driverClassName" value="org.postgresql.Driver" />
+		<property name="url" value="jdbc:postgresql://ec2-23-23-199-181.compute-1.amazonaws.com:5432/dbiiu6jjb0aib0"/>
+		<!-- ?username=tdhogcadfnlqrl&amp;password=NEwH4oD7mRzJqSUuC2F8j9CVLZ&amp;ssl=true&amp;sslfactory=org.postgresql.ssl.NonValidatingFactory -->
+		<property name="username" value="tdhogcadfnlqrl"/>
+        <property name="password" value="NEwH4oD7mRzJqSUuC2F8j9CVLZ"/>
+	</bean>
+	
+<!-- 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"  destroy-method="close">
+		<property name="driverClassName" value="org.postgresql.Driver" />
+		<property name="url" value="jdbc:postgresql://localhost:5432/postgres"/>
+		<property name="username" value="postgres"/>
+        <property name="password" value="123456"/>
+	</bean> -->
+	
+	
+	<bean id="txManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">   
+ 		<property name="sessionFactory" ref="sessionFactory"></property>   
+ 	</bean>   
+ 	
+ 	<tx:annotation-driven transaction-manager="txManager"  />
+ 
+</beans>
